@@ -5,43 +5,54 @@ const prisma = new PrismaClient();
 const books = [
   {
     title: "The Great Gatsby",
-    type: "Fiction",
+    author: "F. Scott Fitzgerald",
+    types: ["Fiction", "Classic"],
     status: "AVAILABLE",
   },
   {
     title: "To Kill a Mockingbird",
-    type: "Fiction",
+    author: "Harper Lee",
+    types: ["Fiction", "Classic"],
     status: "AVAILABLE",
   },
   {
     title: "Atomic Habits",
-    type: "Self-help",
+    author: "James Clear",
+    types: ["Self-help", "Productivity"],
     status: "AVAILABLE",
   },
   {
     title: "Clean Code",
-    type: "Programming",
+    author: "Robert C. Martin",
+    types: ["Programming", "Software Engineering"],
     status: "AVAILABLE",
   },
   {
     title: "The Pragmatic Programmer",
-    type: "Programming",
+    author: "David Thomas and Andrew Hunt",
+    types: ["Programming", "Software Engineering"],
     status: "AVAILABLE",
   },
 ];
 
 async function main() {
+  let createdBooks = 0;
+
   for (const book of books) {
     const existingBook = await prisma.books.findFirst({
-      where: { title: book.title },
+      where: {
+        title: book.title,
+        author: book.author,
+      },
     });
 
     if (!existingBook) {
       await prisma.books.create({ data: book });
+      createdBooks += 1;
     }
   }
 
-  console.log(`Seeded ${books.length} books`);
+  console.log(`Created ${createdBooks} new books`);
 }
 
 main()
