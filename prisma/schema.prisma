@@ -12,22 +12,35 @@ datasource db {
   provider = "postgresql"
 }
 
-model Users{
-  id String @id @default(uuid())
-  username String @unique
+model Users {
+  id            String   @id @default(uuid())
+  username      String   @unique
   password_hash String
-  creatAt DateTime @default(now())
+  createAt      DateTime @default(now())
 
-  borrowBook Books[]
+  borrowRecords BorrowRecords[]
 }
 
-model Books{
-  id String @id @default(uuid())
-  title String
-  type String
-  status String
+model Books {
+  id       String   @id @default(uuid())
+  title    String
+  author   String
+  types    String[]
+  status   String   @default("AVAILABLE")
   createAt DateTime @default(now())
 
-  borrowbyID String?
-  borrowby Users? @relation(fields: [borrowbyID], references: [id])
+  borrowRecords BorrowRecords[]
+}
+
+model BorrowRecords {
+  id         String    @id @default(uuid())
+  borrowDate DateTime  @default(now())
+  dueDate    DateTime
+  returnDate DateTime?
+
+  userId String
+  user   Users  @relation(fields: [userId], references: [id])
+
+  bookId String
+  book   Books  @relation(fields: [bookId], references: [id])
 }
