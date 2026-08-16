@@ -2,9 +2,8 @@ const { prisma } = require("../config/db.js");
 
 const borrowBook = async (req, res) => {
     const { bookId } = req.params;
-    const { userId } = req.body;
 
-    const book = await prisma.books.findUnique({
+    const book = await prisma.book.findUnique({
         where: {id: bookId},
     });
 
@@ -19,15 +18,15 @@ const borrowBook = async (req, res) => {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 7);
 
-    const borrowRecord = await prisma.borrowRecords.create({
+    const borrowRecord = await prisma.borrowRecord.create({
         data: {
-            userId,
+            userId: req.user.id,
             bookId,
             dueDate,
         },
     });
 
-    await prisma.books.update({
+    await prisma.book.update({
         where: { id: bookId },
         data: { status: "BORROWED"}
     });
@@ -41,7 +40,7 @@ const borrowBook = async (req, res) => {
 const returnBook = async (req, res) => {
     const { bookId } = req.params;
 
-    const borrowRecord = await prisma.borrowRecords.findFirst({
+    const borrowRecord = await prisma.borrowRecord.findFirst({
         where: {
             bookId,
             returnDate: null,
@@ -55,7 +54,7 @@ const returnBook = async (req, res) => {
         return res.status(409).json({ error: "This book is not currently borrowed"});
     }
 
-    const returnedRecord = await prisma.borrowRecords.update({
+    const returnedRecord = await prisma.borrowRecord.update({
         where: {
             id: borrowRecord.id,
         },
@@ -64,7 +63,7 @@ const returnBook = async (req, res) => {
         },
     });
 
-    await prisma.books.update({
+    await prisma.book.update({
         where: {id: bookId},
         data: { status: "AVAILABLE" },
     });

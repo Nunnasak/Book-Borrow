@@ -45,7 +45,7 @@ async function main() {
   let createdBooks = 0;
 
   for (const book of books) {
-    const existingBook = await prisma.books.findFirst({
+    const existingBook = await prisma.book.findFirst({
       where: {
         title: book.title,
         author: book.author,
@@ -53,7 +53,7 @@ async function main() {
     });
 
     if (!existingBook) {
-      await prisma.books.create({ data: book });
+      await prisma.book.create({ data: book });
       createdBooks += 1;
     }
   }

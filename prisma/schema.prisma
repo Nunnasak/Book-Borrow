@@ -13,16 +13,18 @@ datasource db {
   provider = "postgresql"
 }
 
-model Users {
+model User {
   id            String   @id @default(uuid())
   username      String   @unique
   password_hash String
   createAt      DateTime @default(now())
 
-  borrowRecords BorrowRecords[]
+  borrowRecords BorrowRecord[]
+
+  @@map("Users")
 }
 
-model Books {
+model Book {
   id       String   @id @default(uuid())
   title    String
   author   String
@@ -30,18 +32,22 @@ model Books {
   status   String   @default("AVAILABLE")
   createAt DateTime @default(now())
 
-  borrowRecords BorrowRecords[]
+  borrowRecords BorrowRecord[]
+
+  @@map("Books")
 }
 
-model BorrowRecords {
+model BorrowRecord {
   id         String    @id @default(uuid())
   borrowDate DateTime  @default(now())
   dueDate    DateTime
   returnDate DateTime?
 
   userId String
-  user   Users  @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   bookId String
-  book   Books  @relation(fields: [bookId], references: [id])
+  book   Book   @relation(fields: [bookId], references: [id])
+
+  @@map("BorrowRecords")
 }
