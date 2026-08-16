@@ -4,7 +4,7 @@ const { generateToken } = require("../utils/generateToken.js");
 
 const register = async (req, res) => {
     const { name, password } = req.body
-    const userExit = await prisma.Users.findUnique({
+    const userExit = await prisma.users.findUnique({
         where: { username: name }
     })
     if (userExit) {
@@ -14,7 +14,7 @@ const register = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = await prisma.Users.create({
+    const user = await prisma.users.create({
         data: {
             username: name,
             password_hash: hashedPassword,
@@ -43,10 +43,10 @@ const login = async(req, res) => {
         return res.status(409).json({message: "Invalid username or password"})
     }
 
-    const ispasswordValid = await bcrypt.compare(password ,user.hashedPassword)
+    const ispasswordValid = await bcrypt.compare(password ,user.password_hash)
 
     if (!ispasswordValid){
-        return resizeBy.status(409).json({message: "Invalid username or password"})
+        return res.status(409).json({message: "Invalid username or password"})
     }
 
     const token = generateToken(user.id, res)
