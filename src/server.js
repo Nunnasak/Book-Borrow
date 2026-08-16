@@ -1,8 +1,8 @@
 require('dotenv').config()
 const { connectDB, disconnectDB } = require('./config/db.js');
 const express = require("express");
-const authRoutes = require("./route/authRoute.js");
-const bookRoutes = require("./route/bookRoutes.js");
+const authRoutes = require("./routes/authRoute.js");
+const bookRoutes = require("./routes/bookRoutes.js");
 const app = express();
 const PORT = process.env.PORT;
 
