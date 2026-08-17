@@ -74,4 +74,25 @@ const returnBook = async (req, res) => {
     });
 };
 
-module.exports = { borrowBook, returnBook }
+const addBook = async (req, res) => {
+    const { title, author, types } = req.body;
+
+    if (!title || !author || !Array.isArray(types) || types.length === 0 ){
+        return res.status(409).json({ error: "title, author and types are required"});
+    };
+    const book = await prisma.book.create({
+        data: {
+            title,
+            author,
+            types,
+        },
+    });
+
+    return res.status(201).json({ message: "Book added successfully", 
+        book,
+    });
+}
+
+
+
+module.exports = { borrowBook, returnBook, addBook }
