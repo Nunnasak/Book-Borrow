@@ -3,6 +3,7 @@ const { connectDB, disconnectDB } = require('./config/db.js');
 const express = require("express");
 const authRoutes = require("./routes/authRoute.js");
 const bookRoutes = require("./routes/bookRoutes.js");
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT;
 
@@ -17,6 +18,7 @@ const startServer = async () => {
 startServer();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true}));
 
 app.use("/auth", authRoutes);
